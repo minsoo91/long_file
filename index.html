@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Read really long files!</title>
+		<style>
+  #byte_content {
+    margin: 5px 0;
+    max-height: 100px;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+</style>
+
+	</head>
+	<body>
+		<input type="file" id="files" multiple/>
+		<output id="list"></output>
+		<div id="byte_content"></div>
+		<div id="button">Click Me to get word frequency</div>
+			<script>
+			  function readBlob(opt_startByte, opt_stopByte, callback) {
+			  	var files = document.getElementById('files').files;
+			  	var file = files[0];
+			  	var start = parseInt(opt_startByte) || 0;
+			  	var end = parseInt(opt_stopByte) || file.size - 1;
+			  	debugger;
+			  	var reader = new FileReader();
+			  	reader.onloadend = function (evt) {
+			  			document.getElementById('byte_content').textContent = evt.target.result;
+			  			callback(evt.target.result);
+			  	}
+			  	var blob = file.slice(start, end + 1);
+			  	reader.readAsText(blob);
+			  }
+
+			  document.getElementById('button').addEventListener("click", function (evt) {
+			  	readBlob(0, 0, function (parsedFile) {
+			  		var dictionary = {};
+			  		var wordArray = parsedFile.split(" ");
+			  		wordArray.forEach(function (word) {
+			  			word = word.match(/[a-zA-Z]+/);
+			  			dictionary[word] = dictionary[word] || 0;
+			  			dictionary[word]++;
+			  		});
+			  		console.log(dictionary);
+			  	});
+			  }, false);
+			</script>
+	</body>
+</html>
